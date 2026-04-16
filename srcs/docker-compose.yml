@@ -18,6 +18,7 @@ services:
     container_name: nginx
     volumes:
       - wp:/var/www/wordpress
+      - letsencrypt:/etc/letsencrypt
     networks:
       - inception
     ports:
@@ -83,3 +84,5 @@ volumes:
       device: /home/ubuntu/data/wp
       o : bind
       type : none
+  letsencrypt:
+    name: letsencrypt

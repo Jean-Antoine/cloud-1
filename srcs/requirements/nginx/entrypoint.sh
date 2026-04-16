@@ -6,7 +6,8 @@ if [ ! -f /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem ]; then
         -d ${DOMAIN_NAME} \
         --non-interactive \
         --agree-tos \
-        -m ${CERTBOT_EMAIL}
+        -m ${CERTBOT_EMAIL} \
+        --staging
 fi
 
 envsubst '${DOMAIN_NAME}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
