@@ -1,0 +1,67 @@
+- hosts: webservers
+  become: true
+
+  tasks:
+    - name: Install Docker prerequisites
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+        state: present
+        update_cache: true
+
+    - name: Add Docker GPG key
+      ansible.builtin.shell:
+        cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        creates: /etc/apt/keyrings/docker.gpg
+
+    - name: Add Docker repository
+      ansible.builtin.shell:
+        cmd: |
+          echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo $VERSION_CODENAME) stable" > /etc/apt/sources.list.d/docker.list
+        creates: /etc/apt/sources.list.d/docker.list
+
+    - name: Install Docker and Compose plugin
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: true
+
+    - name: Start and enable Docker
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Add ubuntu user to docker group
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: true
+
+    - name: Create data directories
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: ubuntu
+        mode: '0755'
+      loop:
+        - /home/ubuntu/data/db
+        - /home/ubuntu/data/wp
+
+    - name: Copy srcs directory
+      ansible.builtin.copy:
+        src: ../srcs/
+        dest: /home/ubuntu/cloud-1/srcs/
+        owner: ubuntu
+        mode: '0755'
+
+    - name: Run docker compose
+      ansible.builtin.command:
+        cmd: docker compose up -d --build
+        chdir: /home/ubuntu/cloud-1/srcs

@@ -1,0 +1,9 @@
+FROM	debian:bullseye
+RUN		apt-get update -y
+RUN		apt-get upgrade -y
+RUN		apt-get install nginx -y
+RUN		apt-get install -y gettext-base certbot
+COPY	./nginx.conf.template /etc/nginx/nginx.conf.template
+COPY	./entrypoint.sh /entrypoint.sh
+RUN		chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

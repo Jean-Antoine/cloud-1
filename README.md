@@ -1,2 +1,10 @@
 # cloud-1
-cloud-1 project
+## Deploy infra
+```
+cd infra
+terraform apply
+```
+## Deploy Website Infra on EC2
+```
+ansible-playbook -i ansible/inventory.ini ansible/playbook.yml
+```
