@@ -45,4 +45,4 @@ wp plugin activate contact-form-7 --allow-root
 chown -R www-data:www-data /var/www/wordpress/
 
 mkdir -p /run/php
-/usr/sbin/php-fpm7.4 -F
+/usr/sbin/php-fpm8.2 -F
