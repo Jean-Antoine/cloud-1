@@ -37,3 +37,6 @@ override.tf.json
 terraform.rc
 
 .terraform.lock.hcl
+
+# Secrets (copy srcs/.env.example to srcs/.env)
+srcs/.env
